@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<MenuConfiguration>
+  <menus>
+    <menu id="Menu1">
+      <items>
+        <item title="Item1">
+          <items>
+            <item title="Item11" controller="controller11" action="Action11">
+              <DependencyActions>
+                <action controller="DepController111" action="DepAction111"/>
+              </DependencyActions>
+            </item>
+            <item title="Item12" controller="controller12" action="Action12"/>
+          </items>
+        </item>
+        <item title="Item2" controller="controller2" action="Action2"/>
+      </items>
+    </menu>
+    <menu id="Menu2">
+      <items>
+        <item title="Item1" controller="controller1" action="Action1"/>
+      </items>
+    </menu>
+  </menus>
+</MenuConfiguration>
