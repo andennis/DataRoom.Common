@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageId>DR.Common.Extensions</PackageId>
+    <PackageId>DA.Common.Extensions</PackageId>
     <Authors>andennis</Authors>
   </PropertyGroup>
 

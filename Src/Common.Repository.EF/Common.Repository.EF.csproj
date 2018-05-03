@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageId>DR.Common.Repository.EF</PackageId>
+    <PackageId>DA.Common.Repository.EF</PackageId>
     <Authors>andennis</Authors>
     <Company>andennis</Company>
   </PropertyGroup>
