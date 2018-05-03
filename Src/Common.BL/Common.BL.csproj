@@ -3,6 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Authors>andennis</Authors>
+    <Company>andennis</Company>
+    <PackageId>DR.Common.BL</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
