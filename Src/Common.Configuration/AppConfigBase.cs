@@ -23,7 +23,7 @@ namespace Common.Configuration
                 throw new AppConfigurationException($"Configuration section '{sectionName}' does not exist");
         }
 
-        public string GetConnectionString(string name)
+        public virtual string GetConnectionString(string name)
         {
             return _rootConfig.GetConnectionString(name);
         }
@@ -31,7 +31,7 @@ namespace Common.Configuration
         /// <summary>
         /// Configuration section should contain parameter "ConnectionStringName" which value specifies the name of connection string from the section "ConnectionStrings"
         /// </summary>
-        public string ConnectionString
+        public virtual string ConnectionString
         {
             get
             {
@@ -40,7 +40,7 @@ namespace Common.Configuration
             }
         }
 
-        public UnityConfiguration Unity
+        public virtual UnityConfiguration Unity
         {
             get
             {
@@ -52,7 +52,7 @@ namespace Common.Configuration
             }
         }
 
-        protected TValue GetValue<TValue>(string key)
+        protected virtual TValue GetValue<TValue>(string key)
         {
             return _config.GetValue<TValue>(key);
         }
