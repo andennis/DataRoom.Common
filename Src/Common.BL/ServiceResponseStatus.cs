@@ -1,6 +1,6 @@
-﻿namespace Common.WebService
+﻿namespace Common.BL
 {
-    public enum WebServiceResponseStatus
+    public enum ServiceResponseStatus
     {
         Unknown = 0,
         Success = 1,

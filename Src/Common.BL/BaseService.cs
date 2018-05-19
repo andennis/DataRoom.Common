@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Common.BL.Search;
 using Common.Extensions;
 using Common.Repository;
 

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Common.BL
+namespace Common.BL.Search
 {
     public class SearchResult<TEntity> where TEntity : class
     {

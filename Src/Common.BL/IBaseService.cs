@@ -1,4 +1,6 @@
-﻿namespace Common.BL
+﻿using Common.BL.Search;
+
+namespace Common.BL
 {
     public interface IBaseService<TEntity, TSearchFilter> 
         where TEntity : class

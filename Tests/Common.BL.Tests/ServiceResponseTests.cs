@@ -1,10 +1,9 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
-namespace Common.WebService.Tests
+namespace Common.BL.Tests
 {
     [TestFixture]
-    public class WebServiceResponseTests
+    public class ServiceResponseTests
     {
         class MyData
         {
@@ -15,8 +14,8 @@ namespace Common.WebService.Tests
         public void DataTest()
         {
             var myData = new MyData() {Val = "123"};
-            var resp = new WebServiceResponse<MyData>(myData);
-            Assert.AreEqual(WebServiceResponseStatus.Success, resp.Status);
+            var resp = new ServiceResponse<MyData>(myData);
+            Assert.AreEqual(ServiceResponseStatus.Success, resp.Status);
             Assert.IsNull(resp.Message);
             Assert.IsNotNull(resp.Data);
             Assert.AreEqual(myData.Val, resp.Data.Val);

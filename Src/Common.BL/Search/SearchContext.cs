@@ -1,4 +1,4 @@
-﻿namespace Common.BL
+﻿namespace Common.BL.Search
 {
     public class SearchContext
     {

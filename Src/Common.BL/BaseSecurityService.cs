@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Common.BL.Search;
 using Common.Repository;
 
 namespace Common.BL
