@@ -5,6 +5,30 @@ namespace Common.Utils
 {
     public static class FileHelper
     {
+        private static Dictionary<string, string> _mimeTypes = new Dictionary<string, string>()
+        {
+            {".txt", "text/plain"},
+            {".pdf", "application/pdf"},
+            {".doc", "application/vnd.ms-word"},
+            {".docx", "application/vnd.ms-word"},
+            {".xls", "application/vnd.ms-excel"},
+            {".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+            {".png", "image/png"},
+            {".jpg", "image/jpeg"},
+            {".jpeg", "image/jpeg"},
+            {".gif", "image/gif"},
+            {".csv", "text/csv"}
+        };
+
+        public static string GetContentType(string fileName)
+        {
+            var ext = Path.GetExtension(fileName).ToLower();
+            if (!_mimeTypes.TryGetValue(ext, out string val))
+                return null;
+
+            return val;
+        }
+
         public static void DirectoryCopy(string srcDir, string dstDir, bool copySubDirs, bool overwrite = false)
         {
             var srcDirInfo = new DirectoryInfo(srcDir);

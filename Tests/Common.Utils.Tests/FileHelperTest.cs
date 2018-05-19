@@ -89,5 +89,15 @@ namespace Common.Utils.Tests
             Assert.False(File.Exists(filePath));
             Assert.True(File.Exists(filePath2));
         }
+
+        [Test]
+        public void GetContentTypeTest()
+        {
+            string ct = FileHelper.GetContentType("unknown");
+            Assert.IsNull(ct);
+
+            ct = FileHelper.GetContentType(".txt");
+            Assert.AreEqual("text/plain", ct);
+        }
     }
 }
