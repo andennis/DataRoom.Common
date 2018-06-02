@@ -10,13 +10,22 @@ namespace Common.Configuration
         private readonly IConfiguration _rootConfig;
         private readonly IConfiguration _config;
 
+        protected AppConfigBase(IConfiguration configuration, string sectionName = null)
+        {
+            _rootConfig = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _config = !string.IsNullOrEmpty(sectionName) ? _rootConfig.GetSection(sectionName) : _rootConfig;
+
+            if (_config == null)
+                throw new AppConfigurationException($"Configuration section '{sectionName}' does not exist");
+        }
+
         protected AppConfigBase(string sectionName = null, string appConfigFileName = "appsettings.json")
         {
             if (string.IsNullOrEmpty(appConfigFileName))
                 throw new ArgumentNullException(nameof(appConfigFileName));
 
             var configBuilder = new ConfigurationBuilder();
-            _rootConfig = configBuilder.AddJsonFile(appConfigFileName, optional: true).Build();
+            _rootConfig = configBuilder.AddJsonFile(appConfigFileName, true, true).Build();
             _config = !string.IsNullOrEmpty(sectionName) ? _rootConfig.GetSection(sectionName) : _rootConfig;
 
             if (_config == null)

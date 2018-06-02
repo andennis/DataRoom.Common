@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.Extensions.Configuration;
+using NUnit.Framework;
 
 namespace Common.Configuration.Tests
 {
@@ -16,15 +17,25 @@ namespace Common.Configuration.Tests
             public int Prm2 => GetValue<int>("Prm2");
             public string NonExistPrm => GetValue<string>("NonExistPrm");
         }
+
         class AppConfig : AppConfigBase
         {
-            public AppConfig(string appConfigFileName)
-                : base(null, appConfigFileName)
+            public AppConfig(IConfiguration configuration)
+                : base(configuration, "Section1")
             {
             }
         }
 
         private const string AppConfigFile = "appsettings1.json";
+
+        [Test]
+        public void AppConfig_Use_Configuration()
+        {
+            var configBuilder = new ConfigurationBuilder();
+            IConfigurationRoot config1 = configBuilder.AddJsonFile(AppConfigFile, true).Build();
+            var config2 = new AppConfig(config1);
+            Assert.AreEqual("Some connection string", config2.ConnectionString);
+        }
 
         [Test]
         public void Section_Parameter_exists()
@@ -45,9 +56,6 @@ namespace Common.Configuration.Tests
         public void GetConnectionString_Test()
         {
             var cfg = new AppConfigSection1(AppConfigFile);
-            Assert.AreEqual("Some connection string", cfg.GetConnectionString("DbConnection1"));
-
-            cfg = new AppConfigSection1(AppConfigFile);
             Assert.AreEqual("Some connection string", cfg.GetConnectionString("DbConnection1"));
         }
 
