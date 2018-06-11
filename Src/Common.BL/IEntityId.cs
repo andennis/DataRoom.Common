@@ -2,6 +2,6 @@
 {
     public interface IEntityId
     {
-         int EntityId { get; }
+         long EntityId { get; }
     }
 }

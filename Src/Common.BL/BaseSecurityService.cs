@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Common.BL.Search;
 using Common.Repository;
@@ -66,7 +65,7 @@ namespace Common.BL
             return queryParams.Union(ocPrms);
         }
 
-        protected virtual void CheckUserAccess(PermissionType permissionType, int? entityId = null)
+        protected virtual void CheckUserAccess(PermissionType permissionType, long? entityId = null)
         {
             _userAccess.CheckUserAccess(EntityTypeId, permissionType, entityId);
         }

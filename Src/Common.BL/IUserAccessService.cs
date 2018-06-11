@@ -2,6 +2,6 @@
 {
     public interface IUserAccessService
     {
-        void CheckUserAccess(int entityTypeId, PermissionType permission, int? entityId = null);
+        void CheckUserAccess(int entityTypeId, PermissionType permission, long? entityId = null);
     }
 }
