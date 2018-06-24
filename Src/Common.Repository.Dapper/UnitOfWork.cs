@@ -1,33 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Common.Repository.Dapper
 {
-    public class UnitOfWork : IUnitOfWork
+    public abstract class UnitOfWork : UnitOfWorkBase
     {
-        public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class
+        private readonly DbContextBase _dbContext;
+
+        protected UnitOfWork(DbContextBase dbContext)
         {
-            throw new NotImplementedException();
+            if (dbContext == null)
+                throw new ArgumentNullException(nameof(dbContext));
+
+            _dbContext = dbContext;
         }
 
-        public void Save()
+        protected override IRepository<TEntity> CreateDefaultRepository<TEntity>()
         {
-            throw new NotImplementedException();
+            Type repositoryType = typeof(Repository<>);
+            return (IRepository<TEntity>)Activator.CreateInstance(repositoryType.MakeGenericType(typeof(TEntity)), _dbContext);
         }
 
         #region Dispose
         private bool _disposed;
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        public virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (!_disposed && disposing)
             {
-                //TODO dispose
+                _dbContext.Dispose();
             }
             _disposed = true;
         }

@@ -26,6 +26,30 @@ namespace Common.Repository.EF
 
         protected string DbScheme => _dbContext.DbScheme;
 
+        public virtual object Insert(TEntity entity)
+        {
+            _dbSet.Attach(entity);
+            _dbContext.Entry(entity).State = EntityState.Added;
+            return null;
+        }
+        public virtual void Update(TEntity entity)
+        {
+            _dbSet.Attach(entity);
+            _dbContext.Entry(entity).State = EntityState.Modified;
+        }
+
+        public virtual void Delete(object id)
+        {
+            var entity = _dbSet.Find(id);
+            Delete(entity);
+        }
+        public virtual void Delete(TEntity entity)
+        {
+            _dbSet.Attach(entity);
+            _dbContext.Entry(entity).State = EntityState.Deleted;
+            _dbSet.Remove(entity);
+        }
+
         public virtual TEntity Find(params object[] keyValues)
         {
             return _dbSet.Find(keyValues);
@@ -44,6 +68,7 @@ namespace Common.Repository.EF
             throw new NotImplementedException();
         }
 
+        /*
         private List<T> RawSqlQuery<T>(string query, Func<DbDataReader, T> map)
         {
             using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
@@ -64,6 +89,7 @@ namespace Common.Repository.EF
                 }
             }
         }
+        */
 
         /*
         private IQueryable<T> SqlQuery(string query, params object[] parameters)
@@ -131,29 +157,6 @@ namespace Common.Repository.EF
 
             string prmNames = string.Join(",", parameters.Cast<IDbDataParameter>().Select(x => string.Format("@{0}=@{0}" + (x.Direction == ParameterDirection.Output ? " OUTPUT" : string.Empty), x.ParameterName)));
             return spName + (prmNames != string.Empty ? " " + prmNames : string.Empty);
-        }
-
-        public virtual void Insert(TEntity entity)
-        {
-            _dbSet.Attach(entity);
-            _dbContext.Entry(entity).State = EntityState.Added;
-        }
-        public virtual void Update(TEntity entity)
-        {
-            _dbSet.Attach(entity);
-            _dbContext.Entry(entity).State = EntityState.Modified;
-        }
-
-        public virtual void Delete(object id)
-        {
-            var entity = _dbSet.Find(id);
-            Delete(entity);
-        }
-        public virtual void Delete(TEntity entity)
-        {
-            _dbSet.Attach(entity);
-            _dbContext.Entry(entity).State = EntityState.Deleted;
-            _dbSet.Remove(entity);
         }
 
         public virtual IRepositoryQuery<TEntity> Query()

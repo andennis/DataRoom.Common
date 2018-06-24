@@ -1,0 +1,6 @@
+﻿CREATE TABLE [cmntst].[DprTestEntity1]
+(
+	[Id] BIGINT NOT NULL PRIMARY KEY IDENTITY, 
+    [Name] NVARCHAR(50) NULL, 
+    [Value] NVARCHAR(50) NULL
+)

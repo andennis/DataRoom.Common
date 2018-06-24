@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Common.Repository.EF
 {
-    public abstract class UnitOfWork : IUnitOfWork
+    public abstract class UnitOfWork : UnitOfWorkBase
     {
         protected readonly DbContextBase _dbContext;
-        protected readonly IDictionary<Type, object> _repositories = new Dictionary<Type, object>();
         protected readonly IOperationContext _operationContext;
 
         protected UnitOfWork(DbContextBase dbContext)
@@ -26,23 +24,9 @@ namespace Common.Repository.EF
             _operationContext = operationContext;
         }
 
-        protected void RegisterCustomRepository<TEntity>(Func<IRepository<TEntity>> fncRepository) where TEntity : class
-        {
-            Type entityType = typeof (TEntity);
-            if (_repositories.ContainsKey(entityType))
-                throw new Exception($"Repository has already been registered for the the entity type: {entityType.Name}");
-
-            _repositories.Add(entityType, new Lazy<IRepository<TEntity>>(fncRepository));
-        }
-
         #region Dispose
         private bool _disposed;
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        public virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (!_disposed && disposing)
             {
@@ -52,31 +36,13 @@ namespace Common.Repository.EF
         }
         #endregion
 
-        public virtual IRepository<TEntity> GetRepository<TEntity>() where TEntity : class
-        {
-            Type entityType = typeof(TEntity);
-
-            if (_repositories.TryGetValue(entityType, out object repository))
-            {
-                var lazyRep = repository as Lazy<IRepository<TEntity>>;
-                if (lazyRep != null)
-                    return lazyRep.Value;
-
-                return (IRepository<TEntity>)repository;
-            }
-
-            IRepository<TEntity> rep = CreateDefaultRepository<TEntity>();
-            _repositories.Add(entityType, rep);
-            return rep;
-        }
-
-        protected virtual IRepository<TEntity> CreateDefaultRepository<TEntity>() where TEntity : class
+        protected override IRepository<TEntity> CreateDefaultRepository<TEntity>()
         {
             Type repositoryType = typeof(Repository<>);
             return (IRepository<TEntity>)Activator.CreateInstance(repositoryType.MakeGenericType(typeof(TEntity)), _dbContext, _operationContext);
         }
 
-        public void Save()
+        public override void Save()
         {
             foreach (EntityEntry dbEntityEntry in _dbContext.ChangeTracker.Entries().Where(x => x.State == EntityState.Added))
             {
