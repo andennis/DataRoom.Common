@@ -69,4 +69,7 @@
   <ItemGroup>
     <None Include="Common.Repository.Dapper.DB.publish.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="Common.Repository.Dapper.DB.refactorlog" />
+  </ItemGroup>
 </Project>
