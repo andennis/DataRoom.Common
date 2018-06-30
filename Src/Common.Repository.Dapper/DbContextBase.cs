@@ -15,6 +15,8 @@ namespace Common.Repository.Dapper
             _connectionString = connectionString;
         }
 
+        public abstract string DbScheme { get; }
+
         protected abstract IDbConnection CreateDbConnection(string connectionString);
 
         #region Dispose

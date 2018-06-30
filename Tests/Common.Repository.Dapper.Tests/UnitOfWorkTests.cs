@@ -19,9 +19,9 @@ namespace Common.Repository.Dapper.Tests
         public void GetRepository_Returns_Default_Repository()
         {
             IUnitOfWork uow = CreateUnitOfWork();
-            var repo = uow.GetRepository<DprTestEntity1>();
+            var repo = uow.GetRepository<TestEntity1>();
             Assert.IsNotNull(repo);
-            Assert.IsAssignableFrom<Repository<DprTestEntity1>>(repo);
+            Assert.IsAssignableFrom<Repository<TestEntity1>>(repo);
         }
 
         [Test]

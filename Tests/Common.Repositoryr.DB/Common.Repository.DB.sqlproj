@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <Name>Common.Repository.Dapper.DB</Name>
+    <Name>Common.Repository.DB</Name>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{252b1d98-7df3-4f2e-bfb1-5418ae432754}</ProjectGuid>
@@ -12,8 +12,8 @@
     <OutputType>Database</OutputType>
     <RootPath>
     </RootPath>
-    <RootNamespace>Common.Repository.Dapper.DB</RootNamespace>
-    <AssemblyName>Common.Repository.Dapper.DB</AssemblyName>
+    <RootNamespace>Common.Repository.DB</RootNamespace>
+    <AssemblyName>Common.Repository.DB</AssemblyName>
     <ModelCollation>1033, CI</ModelCollation>
     <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
     <DeployToDatabase>True</DeployToDatabase>
@@ -25,6 +25,7 @@
     <TargetDatabaseSet>True</TargetDatabaseSet>
     <DefaultSchema>cmntst</DefaultSchema>
     <IncludeSchemaNameInFileName>True</IncludeSchemaNameInFileName>
+    <TargetDatabase>Common.Repository.Dapper.DB</TargetDatabase>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -61,15 +62,18 @@
     <Folder Include="Properties" />
     <Folder Include="Security" />
     <Folder Include="Tables" />
+    <Folder Include="Stored Procedures" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\cmntst.sql" />
-    <Build Include="Tables\cmntst.DprTestEntity1.sql" />
+    <Build Include="Tables\cmntst.TestEntity1.sql" />
+    <Build Include="Stored Procedures\cmntst.Get_TestEntity1.sql" />
+    <Build Include="Stored Procedures\cmntst.GetTestEntity1Count.sql" />
+    <Build Include="Stored Procedures\cmntst.Insert_TestEntity1.sql" />
+    <Build Include="Stored Procedures\cmntst.TestEntity1_GetView.sql" />
+    <Build Include="Stored Procedures\cmntst.TestEntity1_Search.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Common.Repository.Dapper.DB.publish.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <RefactorLog Include="Common.Repository.Dapper.DB.refactorlog" />
+    <None Include="Common.Repository.DB.publish.xml" />
   </ItemGroup>
 </Project>

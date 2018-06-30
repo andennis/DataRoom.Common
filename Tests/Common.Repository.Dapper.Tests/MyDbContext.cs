@@ -10,6 +10,8 @@ namespace Common.Repository.Dapper.Tests
         {
         }
 
+        public override string DbScheme => "cmntst";
+
         protected override IDbConnection CreateDbConnection(string connectionString)
         {
             return new SqlConnection(connectionString);

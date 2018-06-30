@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Common.Repository.EF
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+    public class Repository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntity> where TEntity : class
     {
         protected readonly DbSet<TEntity> _dbSet;
         protected readonly DbContextBase _dbContext;
@@ -23,7 +23,7 @@ namespace Common.Repository.EF
             _operationContext = operationContext;
         }
 
-        protected string DbScheme => _dbContext.DbScheme;
+        protected override string DbScheme => _dbContext.DbScheme;
 
         public virtual object Insert(TEntity entity)
         {
@@ -196,7 +196,7 @@ namespace Common.Repository.EF
         /// <typeparam name="TEntityView"></typeparam>
         /// <param name="entityId"></param>
         /// <returns></returns>
-        public virtual TEntityView GetView<TEntityView>(int entityId) where TEntityView : class
+        public virtual TEntityView GetView<TEntityView>(object entityId) where TEntityView : class
         {
             return SqlQueryStoredProc<TEntityView>(SpNameGetView, new SqlParameter("ID", entityId)).FirstOrDefault();
         }
@@ -239,7 +239,5 @@ namespace Common.Repository.EF
             return !val.Equals(equalToVal) ? val : (object)DBNull.Value;
         }
 
-        protected virtual string SpNameGetView => $"{DbScheme}.{typeof(TEntity).Name}_GetView";
-        protected virtual string SpNameSearch => $"{DbScheme}.{typeof(TEntity).Name}_Search";
     }
 }

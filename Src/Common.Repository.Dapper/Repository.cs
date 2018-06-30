@@ -9,7 +9,7 @@ using Dommel;
 
 namespace Common.Repository.Dapper
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+    public class Repository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntity> where TEntity : class
     {
         private readonly DbContextBase _dbContext;
 
@@ -22,6 +22,8 @@ namespace Common.Repository.Dapper
         {
             _dbContext = dbContext;
         }
+
+        protected override string DbScheme => _dbContext.DbScheme;
 
         public object Insert(TEntity entity)
         {
@@ -65,13 +67,13 @@ namespace Common.Repository.Dapper
 
         public IQueryable<T> SqlQuery<T>(string query, params object[] parameters)
         {
-            DynamicParameters prms = PrepareParameters(parameters);
+            DynamicParameters prms = CreateDapperParameters(parameters);
             return _dbContext.DbConnection.Query<T>(query, prms).AsQueryable();
         }
 
         public T SqlQueryScalar<T>(string query, params object[] parameters)
         {
-            DynamicParameters prms = PrepareParameters(parameters);
+            DynamicParameters prms = CreateDapperParameters(parameters);
             return _dbContext.DbConnection.ExecuteScalar<T>(query, prms);
         }
 
@@ -82,36 +84,49 @@ namespace Common.Repository.Dapper
 
         public IQueryable<T> SqlQueryStoredProc<T>(string spName, params object[] parameters)
         {
-            DynamicParameters prms = PrepareParameters(parameters);
-            return _dbContext.DbConnection.Query<T>(spName, prms, commandType: CommandType.StoredProcedure).AsQueryable();
+            DynamicParameters dprPrms = CreateDapperParameters(parameters);
+            IQueryable<T> result = _dbContext.DbConnection.Query<T>(spName, dprPrms, commandType: CommandType.StoredProcedure).AsQueryable();
+            MapOutputParameters(dprPrms, parameters);
+            return result;
         }
 
         public T SqlQueryScalarStoredProc<T>(string spName, params object[] parameters)
         {
-            DynamicParameters prms = PrepareParameters(parameters);
+            DynamicParameters prms = CreateDapperParameters(parameters);
             return _dbContext.DbConnection.ExecuteScalar<T>(spName, prms, commandType: CommandType.StoredProcedure);
         }
 
         public void ExecuteCommand(string commandText, params object[] parameters)
         {
-            DynamicParameters prms = PrepareParameters(parameters);
+            DynamicParameters prms = CreateDapperParameters(parameters);
             _dbContext.DbConnection.Execute(commandText, prms);
         }
 
         public void ExecuteNonQueryStoredProc(string spName, params object[] parameters)
         {
-            DynamicParameters prms = PrepareParameters(parameters);
-            _dbContext.DbConnection.Execute(spName, prms, commandType: CommandType.StoredProcedure);
+            DynamicParameters dprPrms = CreateDapperParameters(parameters);
+            _dbContext.DbConnection.Execute(spName, dprPrms, commandType: CommandType.StoredProcedure);
+            MapOutputParameters(dprPrms, parameters);
         }
 
-        public TEntityView GetView<TEntityView>(int entityId) where TEntityView : class
+        public TEntityView GetView<TEntityView>(object entityId) where TEntityView : class
         {
-            throw new NotImplementedException();
+            return SqlQueryStoredProc<TEntityView>(SpNameGetView, new QueryParameter("ID", entityId)).FirstOrDefault();
         }
 
-        public IEnumerable<TEntityView> Search<TEntityView>(IEnumerable<QueryParameter> searchParams, out int totalRecords)
+        public IEnumerable<TEntityView> Search<TEntityView>(IEnumerable<QueryParameter> searchParams, out long totalRecords)
         {
-            throw new NotImplementedException();
+            IList<object> sqlPrms = searchParams?.Select(x => (object)x).ToList();
+
+            var prm = new QueryParameter("TotalRecords", 0) { Direction = ParameterDirection.Output };
+            if (sqlPrms != null)
+                sqlPrms.Add(prm);
+            else
+                sqlPrms = new List<object>() { prm };
+
+            IEnumerable<TEntityView> result = SqlQueryStoredProc<TEntityView>(SpNameSearch, sqlPrms.ToArray()).ToList();
+            totalRecords = Convert.ToInt64(prm.Value);
+            return result;
         }
 
         internal IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null,
@@ -123,13 +138,24 @@ namespace Common.Repository.Dapper
             throw new NotImplementedException();
         }
 
-        private DynamicParameters PrepareParameters(object[] parameters)
+        private DynamicParameters CreateDapperParameters(object[] parameters)
         {
             var prms = new DynamicParameters();
-            foreach (var prm in parameters.Cast<IDbDataParameter>())
-                prms.Add(prm.ParameterName, prm.Value);
+            foreach (var prm in parameters.OfType<IDbDataParameter>())
+                prms.Add(prm.ParameterName, prm.Value, direction: Enum.IsDefined(typeof(ParameterDirection), prm.Direction) ? prm.Direction : ParameterDirection.Input);
+            foreach (var prm in parameters.OfType<QueryParameter>())
+                prms.Add(prm.Name, prm.Value, direction:prm.Direction);
 
             return prms;
+        }
+
+        private void MapOutputParameters(DynamicParameters dprPrms, object[] parameters)
+        {
+            foreach (var queryPrm in parameters.OfType<IDbDataParameter>().Where(x => x.Direction == ParameterDirection.Output))
+                queryPrm.Value = dprPrms.Get<object>(queryPrm.ParameterName);
+
+            foreach (var queryPrm in parameters.OfType<QueryParameter>().Where(x => x.Direction == ParameterDirection.Output))
+                queryPrm.Value = dprPrms.Get<object>(queryPrm.Name);
         }
 
     }

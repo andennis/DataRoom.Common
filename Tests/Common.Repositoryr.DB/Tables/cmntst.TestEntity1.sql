@@ -1,4 +1,4 @@
-﻿CREATE TABLE [cmntst].[DprTestEntity1]
+﻿CREATE TABLE [cmntst].[TestEntity1]
 (
 	[MyId] BIGINT NOT NULL PRIMARY KEY IDENTITY, 
     [Name] NVARCHAR(50) NULL, 

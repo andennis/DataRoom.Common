@@ -2,11 +2,11 @@
 
 namespace Common.Repository.Dapper.Tests
 {
-    public class DprTestEntity1Map : DommelEntityMap<DprTestEntity1>
+    public class TestEntity1Map : DommelEntityMap<TestEntity1>
     {
-        public DprTestEntity1Map()
+        public TestEntity1Map()
         {
-            ToTable("DprTestEntity1", "cmntst");
+            ToTable(nameof(TestEntity1), "cmntst");
             Map(x => x.MyId).IsKey().IsIdentity();
         }
     }

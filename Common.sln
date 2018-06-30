@@ -31,9 +31,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.BL.Tests", "Tests\Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Repository.Dapper", "Src\Common.Repository.Dapper\Common.Repository.Dapper.csproj", "{9EDC5741-C11F-4AFD-A5B2-F86C4E64B93F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Repository.Dapper.Tests", "Tests\Common.Repository.Dapper.Tests\Common.Repository.Dapper.Tests.csproj", "{9493828E-BEE4-4F93-B48D-46375B5DFE8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Repository.Dapper.Tests", "Tests\Common.Repository.Dapper.Tests\Common.Repository.Dapper.Tests.csproj", "{9493828E-BEE4-4F93-B48D-46375B5DFE8F}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Common.Repository.Dapper.DB", "Tests\Common.Repository.Dapper.DB\Common.Repository.Dapper.DB.sqlproj", "{252B1D98-7DF3-4F2E-BFB1-5418AE432754}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Common.Repository.DB", "Tests\Common.Repositoryr.DB\Common.Repository.DB.sqlproj", "{252B1D98-7DF3-4F2E-BFB1-5418AE432754}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

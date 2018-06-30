@@ -23,8 +23,8 @@ namespace Common.Repository
         void ExecuteCommand(string commandText, params object[] parameters);
         void ExecuteNonQueryStoredProc(string spName, params object[] parameters);
 
-        TEntityView GetView<TEntityView>(int entityId) where TEntityView : class;
-        IEnumerable<TEntityView> Search<TEntityView>(IEnumerable<QueryParameter> searchParams, out int totalRecords);
+        TEntityView GetView<TEntityView>(object entityId) where TEntityView : class;
+        IEnumerable<TEntityView> Search<TEntityView>(IEnumerable<QueryParameter> searchParams, out long totalRecords);
 
     }
 }
