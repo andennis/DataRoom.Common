@@ -78,6 +78,15 @@ namespace Common.Repository.Dapper.Tests
 
         }
 
+        [Test]
+        public void Сomposite_Key_Not_Supported()
+        {
+            using (var uow = CreateUnitOfWork())
+            {
+                IRepository<DprTestEntity1> repo = uow.GetRepository<DprTestEntity1>();
+                Assert.Throws<CommonRepositoryException>(() => repo.Find(1, 2));
+            }
+        }
 
         private MyUnitOfWork CreateUnitOfWork()
         {

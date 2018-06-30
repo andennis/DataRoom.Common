@@ -47,6 +47,9 @@ namespace Common.Repository.Dapper
 
         public TEntity Find(params object[] keyValues)
         {
+            if (keyValues.Length > 1)
+                throw new CommonRepositoryException("Сomposite key is not supported");
+
             return _dbContext.DbConnection.Get<TEntity>(keyValues[0]);
         }
 
