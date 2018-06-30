@@ -7,9 +7,9 @@ namespace Common.BL.Search
         private IEnumerable<TEntity> _data;
         public IEnumerable<TEntity> Data 
         { 
-            get { return _data ?? (_data = new TEntity[0]); }
-            set { _data = value; }
+            get => _data ?? (_data = new TEntity[0]);
+            set => _data = value;
         }
-        public int TotalCount { get; set; }
+        public long TotalCount { get; set; }
     }
 }

@@ -116,8 +116,7 @@ namespace Common.BL
         public virtual SearchResult<TEntityView> SearchView<TEntityView>(SearchContext searchContext, TSearchFilter searchFilter) where TEntityView : class
         {
             IEnumerable<QueryParameter> searchParams = GetSearchViewParameters(searchContext, searchFilter);
-            int totalRecords;
-            IEnumerable<TEntityView> result = _repository.Search<TEntityView>(searchParams, out totalRecords);
+            IEnumerable<TEntityView> result = _repository.Search<TEntityView>(searchParams, out long totalRecords);
 
             return new SearchResult<TEntityView>()
             {
@@ -128,8 +127,8 @@ namespace Common.BL
 
         protected virtual IEnumerable<QueryParameter> GetSearchViewParameters(SearchContext searchContext, TSearchFilter searchFilter)
         {
-            IEnumerable<QueryParameter> searchParams = searchFilter.ObjectPropertiesToDictionary().Select(x => new QueryParameter() { Name = x.Key, Value = x.Value });
-            return searchParams.Union(searchContext.ObjectPropertiesToDictionary().Select(x => new QueryParameter() { Name = x.Key, Value = x.Value }));
+            IEnumerable<QueryParameter> searchParams = searchFilter.ObjectPropertiesToDictionary().Select(x => new QueryParameter(x.Key, x.Value));
+            return searchParams.Union(searchContext.ObjectPropertiesToDictionary().Select(x => new QueryParameter(x.Key, x.Value)));
         }
 
         protected virtual void Validate(TEntity entity)

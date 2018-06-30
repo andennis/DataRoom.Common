@@ -57,10 +57,10 @@ namespace Common.BL
             IEnumerable<QueryParameter> queryParams = base.GetSearchViewParameters(searchContext, searchFilter);
             var ocPrms = new List<QueryParameter>
             {
-                new QueryParameter() {Name = "UserId", Value = _operationContext.UserId}
+                new QueryParameter("UserId", _operationContext.UserId)
             };
             if (_operationContext.SiteId.HasValue)
-                ocPrms.Add(new QueryParameter() { Name = "SiteId", Value = _operationContext.SiteId });
+                ocPrms.Add(new QueryParameter("SiteId", _operationContext.SiteId));
 
             return queryParams.Union(ocPrms);
         }

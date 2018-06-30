@@ -219,7 +219,7 @@ namespace Common.Repository.EF
         /// <param name="searchParams"></param>
         /// <param name="totalRecords"></param>
         /// <returns></returns>
-        public virtual IEnumerable<TEntityView> Search<TEntityView>(IEnumerable<QueryParameter> searchParams, out int totalRecords)
+        public virtual IEnumerable<TEntityView> Search<TEntityView>(IEnumerable<QueryParameter> searchParams, out long totalRecords)
         {
             IList<object> sqlPrms = searchParams?.Select(x => (object)new SqlParameter(x.Name, x.Value)).ToList();
 
