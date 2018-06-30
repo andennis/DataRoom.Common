@@ -33,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Repository.Dapper", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Repository.Dapper.Tests", "Tests\Common.Repository.Dapper.Tests\Common.Repository.Dapper.Tests.csproj", "{9493828E-BEE4-4F93-B48D-46375B5DFE8F}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Common.Repository.DB", "Tests\Common.Repositoryr.DB\Common.Repository.DB.sqlproj", "{252B1D98-7DF3-4F2E-BFB1-5418AE432754}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Common.Repository.DB", "Tests\Common.Repository.DB\Common.Repository.DB.sqlproj", "{252B1D98-7DF3-4F2E-BFB1-5418AE432754}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
