@@ -1,6 +1,6 @@
-﻿namespace Common.Repository.Dapper.Tests
+﻿namespace Common.Repository.Tests.Entities
 {
-    public class DprTestEntity2
+    public class TestEntity2
     {
         public long Id { get; set; }
         public string Name { get; set; }

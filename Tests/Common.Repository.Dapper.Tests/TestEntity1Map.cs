@@ -1,4 +1,5 @@
-﻿using Dapper.FluentMap.Dommel.Mapping;
+﻿using Common.Repository.Tests.Entities;
+using Dapper.FluentMap.Dommel.Mapping;
 
 namespace Common.Repository.Dapper.Tests
 {

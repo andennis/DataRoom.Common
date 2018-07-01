@@ -2,6 +2,8 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using Common.Repository.Tests;
+using Common.Repository.Tests.Entities;
 using Dapper;
 using Dapper.FluentMap;
 using Dapper.FluentMap.Dommel;
@@ -10,7 +12,7 @@ using NUnit.Framework;
 namespace Common.Repository.Dapper.Tests
 {
     [TestFixture]
-    public class RepositoryTests
+    public class DapperRepositoryTests
     {
         [OneTimeSetUp]
         public void InitAllTests()
@@ -108,6 +110,23 @@ namespace Common.Repository.Dapper.Tests
         }
 
         [Test]
+        public void SqlQuery_Genegic_Test()
+        {
+            using (var uow = CreateUnitOfWork())
+            {
+                IRepository<TestEntity1> repo = uow.GetRepository<TestEntity1>();
+
+                var entity1 = new TestEntity1() { Name = "NQuery_Gnr_1", Value = "VQuery_Gnr_1" };
+                object id = repo.Insert(entity1);
+
+                IQueryable<TestEntity1> result = repo.SqlQuery<TestEntity1>("select * from cmntst.TestEntity1 where MyId=@id", new QueryParameter("Id", id));
+                Assert.IsNotNull(result);
+                Assert.AreEqual(1, result.Count());
+                Assert.AreEqual(entity1.Name, result.First().Name);
+            }
+        }
+
+        [Test]
         public void SqlQueryScalarTest()
         {
             using (var uow = CreateUnitOfWork())
@@ -130,6 +149,23 @@ namespace Common.Repository.Dapper.Tests
                 IRepository<TestEntity1> repo = uow.GetRepository<TestEntity1>();
 
                 var entity1 = new TestEntity1() { Name = "NSqlQueryStoredProc1", Value = "VSqlQueryStoredProc1" };
+                object id = repo.Insert(entity1);
+
+                var result = repo.SqlQueryStoredProc("cmntst.Get_TestEntity1", new QueryParameter("Id", id));
+                Assert.IsNotNull(result);
+                Assert.AreEqual(1, result.Count());
+                Assert.AreEqual(entity1.Name, result.First().Name);
+            }
+        }
+
+        [Test]
+        public void SqlQueryStoredProc_Generic_Test()
+        {
+            using (var uow = CreateUnitOfWork())
+            {
+                IRepository<TestEntity1> repo = uow.GetRepository<TestEntity1>();
+
+                var entity1 = new TestEntity1() { Name = "NSqlQueryStoredProc_Gnr_1", Value = "VSqlQueryStoredProc1_Gnr_" };
                 object id = repo.Insert(entity1);
 
                 var result = repo.SqlQueryStoredProc<TestEntity1>("cmntst.Get_TestEntity1", new QueryParameter("Id", id));
@@ -164,7 +200,7 @@ namespace Common.Repository.Dapper.Tests
                 var entity1 = new TestEntity1() { Name = "NExecuteCommand1", Value = "VExecuteCommand1" };
                 object id = repo.Insert(entity1);
 
-                repo.ExecuteCommand("delete from cmntst.TestEntity1");
+                repo.ExecuteCommand("delete from cmntst.TestEntity1 where MyId=@id", new QueryParameter("id", id));
                 TestEntity1 entity = repo.Find(id);
                 Assert.IsNull(entity);
             }
@@ -200,9 +236,7 @@ namespace Common.Repository.Dapper.Tests
                 var entity1 = new TestEntity1() { Name = "NGetView1", Value = "VGetView1" };
                 object id = repo.Insert(entity1);
 
-                var prmId = new QueryParameter("Id", 0) { Direction = ParameterDirection.Output };
                 var eview = repo.GetView<TestEntity1>(id);
-
                 Assert.IsNotNull(eview);
                 Assert.AreEqual(entity1.Name, eview.Name);
                 Assert.AreEqual(entity1.Value, eview.Value);
@@ -229,11 +263,11 @@ namespace Common.Repository.Dapper.Tests
             }
         }
 
-        private MyUnitOfWork CreateUnitOfWork()
+        private MyDapperUnitOfWork CreateUnitOfWork()
         {
             var cfg = new TestAppConfig();
-            var dbContext = new MyDbContext(cfg.GetConnectionString("CommonConnection"));
-            return new MyUnitOfWork(dbContext);
+            var dbContext = new MyDapperDbContext(cfg.GetConnectionString("CommonConnection"));
+            return new MyDapperUnitOfWork(dbContext);
         }
 
         private void CleanUpDb()

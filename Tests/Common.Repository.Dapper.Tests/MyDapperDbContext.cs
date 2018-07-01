@@ -3,9 +3,9 @@ using System.Data.SqlClient;
 
 namespace Common.Repository.Dapper.Tests
 {
-    public class MyDbContext : DbContextBase
+    public class MyDapperDbContext : DbContextBase
     {
-        public MyDbContext(string dbConnectionString)
+        public MyDapperDbContext(string dbConnectionString)
             :base(dbConnectionString)
         {
         }

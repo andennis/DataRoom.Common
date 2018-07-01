@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -40,7 +41,8 @@ namespace Common.Repository.EF
         public virtual void Delete(object id)
         {
             var entity = _dbSet.Find(id);
-            Delete(entity);
+            if (entity != null)
+                Delete(entity);
         }
         public virtual void Delete(TEntity entity)
         {
@@ -59,51 +61,12 @@ namespace Common.Repository.EF
             UpdateNulltoDBNull(parameters);
             return _dbSet.FromSql(query, parameters);
         }
+
         public virtual IQueryable<T> SqlQuery<T>(string query, params object[] parameters)
         {
             UpdateNulltoDBNull(parameters);
-            //RawSqlCommand cmd = _dbContext.Database.GetService<IRawSqlCommandBuilder>().Build(query, parameters);
-            //RelationalDataReader dr = cmd.RelationalCommand.ExecuteReader(_dbContext.Database.GetService<IRelationalConnection>(),cmd.ParameterValues);
-            throw new NotImplementedException();
+            return RawSqlQuery<T>(query, parameters).AsQueryable();
         }
-
-        /*
-        private List<T> RawSqlQuery<T>(string query, Func<DbDataReader, T> map)
-        {
-            using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
-            {
-                command.CommandText = query;
-                command.CommandType = CommandType.Text;
-
-                _dbContext.Database.OpenConnection();
-
-                using (var result = command.ExecuteReader())
-                {
-                    var entities = new List<T>();
-
-                    while (result.Read())
-                        entities.Add(map(result));
-
-                    return entities;
-                }
-            }
-        }
-        */
-
-        /*
-        private IQueryable<T> SqlQuery(string query, params object[] parameters)
-        {
-            using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
-            {
-                command.CommandText = "SELECT * From Table1";
-                _dbContext.Database.OpenConnection();
-                using (var result = command.ExecuteReader())
-                {
-                    return result.AsQueryable<T>();
-                }
-            }
-        }
-        */
 
         public virtual T SqlQueryScalar<T>(string query, params object[] parameters)
         {
@@ -142,7 +105,12 @@ namespace Common.Repository.EF
 
         private void UpdateNulltoDBNull(IEnumerable<object> parameters)
         {
-            foreach (IDbDataParameter prm in parameters.Cast<IDbDataParameter>())
+            foreach (IDbDataParameter prm in parameters.OfType<IDbDataParameter>())
+            {
+                if (prm.Value == null)
+                    prm.Value = DBNull.Value;
+            }
+            foreach (QueryParameter prm in parameters.OfType<QueryParameter>())
             {
                 if (prm.Value == null)
                     prm.Value = DBNull.Value;
@@ -154,7 +122,9 @@ namespace Common.Repository.EF
             if (parameters == null || !parameters.Any())
                 return spName;
 
-            string prmNames = string.Join(",", parameters.Cast<IDbDataParameter>().Select(x => string.Format("@{0}=@{0}" + (x.Direction == ParameterDirection.Output ? " OUTPUT" : string.Empty), x.ParameterName)));
+            IEnumerable<string> prms1 = parameters.OfType<IDbDataParameter>().Select(x => string.Format("@{0}=@{0}" + (x.Direction == ParameterDirection.Output ? " OUTPUT" : string.Empty), x.ParameterName));
+            IEnumerable<string> prms2 = parameters.OfType<QueryParameter>().Select(x => string.Format("@{0}=@{0}" + (x.Direction == ParameterDirection.Output ? " OUTPUT" : string.Empty), x.Name));
+            string prmNames = string.Join(",", prms1.Union(prms2));
             return spName + (prmNames != string.Empty ? " " + prmNames : string.Empty);
         }
 
@@ -237,6 +207,42 @@ namespace Common.Repository.EF
         protected object NullIf<T>(T val, T equalToVal) where T : struct
         {
             return !val.Equals(equalToVal) ? val : (object)DBNull.Value;
+        }
+
+        private List<T> RawSqlQuery<T>(string query, object[] parameters)
+        {
+            using (var conn = _dbContext.Database.GetDbConnection())
+            using (var command = conn.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+
+                foreach (var prm in parameters.Cast<IDbDataParameter>())
+                    command.Parameters.Add(prm);
+
+                _dbContext.Database.OpenConnection();
+
+                using (var dr = command.ExecuteReader())
+                {
+                    var entities = new List<T>();
+                    if (!dr.HasRows)
+                        return entities;
+
+                    PropertyInfo[] props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+                    while (dr.Read())
+                    {
+                        T obj = (T)Activator.CreateInstance(typeof(T));
+                        foreach (PropertyInfo pi in props)
+                            pi.SetValue(obj, dr[pi.Name]);
+
+                        entities.Add(obj);
+                    }
+                    dr.Close();
+
+                    return entities;
+                }
+            }
         }
 
     }

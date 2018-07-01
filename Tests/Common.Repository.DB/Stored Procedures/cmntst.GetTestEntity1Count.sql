@@ -2,5 +2,5 @@
 	@Id BIGINT = 0
 AS
 BEGIN
-	SELECT count(*) from cmntst.TestEntity1 where MyId = @Id
+	SELECT CAST(COUNT(*) AS BIGINT) FROM cmntst.TestEntity1 WHERE MyId = @Id
 END

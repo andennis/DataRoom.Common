@@ -13,14 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Src\Common.Configuration\Common.Configuration.csproj" />
-    <ProjectReference Include="..\..\Src\Common.Repository.Dapper\Common.Repository.Dapper.csproj" />
-    <ProjectReference Include="..\Common.Repository.Tests\Common.Repository.Tests.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\..\Src\Common.Repository\Common.Repository.csproj" />
   </ItemGroup>
 
 </Project>

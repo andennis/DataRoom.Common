@@ -1,4 +1,4 @@
-﻿namespace Common.Repository.Dapper.Tests
+﻿namespace Common.Repository.Tests.Entities
 {
     public class TestEntity1
     {

@@ -6,12 +6,12 @@ using NUnit.Framework;
 namespace Common.Repository.Dapper.Tests
 {
     [TestFixture]
-    public class DbContextBaseTests
+    public class DapperDbContextTests
     {
         [Test]
         public void Dispose_Test()
         {
-            var context = new MyDbContext("");
+            var context = new MyDapperDbContext("");
             Assert.IsInstanceOf<IDisposable>(context);
             var conn = context.DbConnection;
             context.Dispose();
@@ -21,7 +21,7 @@ namespace Common.Repository.Dapper.Tests
         [Test]
         public void DbConnection_Is_SqlConnection()
         {
-            var context = new MyDbContext("");
+            var context = new MyDapperDbContext("");
             IDbConnection conn = context.DbConnection;
             Assert.IsNotNull(conn);
             Assert.IsAssignableFrom<SqlConnection>(conn);

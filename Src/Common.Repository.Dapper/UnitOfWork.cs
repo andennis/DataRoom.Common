@@ -4,7 +4,7 @@ namespace Common.Repository.Dapper
 {
     public abstract class UnitOfWork : UnitOfWorkBase
     {
-        private readonly DbContextBase _dbContext;
+        protected readonly DbContextBase _dbContext;
 
         protected UnitOfWork(DbContextBase dbContext)
         {
